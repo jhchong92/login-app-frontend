@@ -11,7 +11,12 @@
               square
               filled
               clearable
-              v-model="firstName"
+              v-model="state.firstName"
+              @blur="v$.firstName.$touch"
+              :error="v$.firstName.$error"
+              :error-message="
+                $filters.computeFormErrorMessage(v$.firstName.$errors)
+              "
               type="text"
               label="First Name"
             />
@@ -19,7 +24,12 @@
               square
               filled
               clearable
-              v-model="lastName"
+              v-model="state.lastName"
+              @blur="v$.lastName.$touch"
+              :error="v$.lastName.$error"
+              :error-message="
+                $filters.computeFormErrorMessage(v$.lastName.$errors)
+              "
               type="text"
               label="Last Name"
             />
@@ -27,7 +37,12 @@
               square
               filled
               clearable
-              v-model="email"
+              v-model="state.email"
+              @blur="v$.email.$touch"
+              :error="v$.email.$error"
+              :error-message="
+                $filters.computeFormErrorMessage(v$.email.$errors)
+              "
               type="email"
               label="Email"
             />
@@ -35,7 +50,12 @@
               square
               filled
               clearable
-              v-model="password"
+              v-model="state.password"
+              @blur="v$.password.$touch"
+              :error="v$.password.$error"
+              :error-message="
+                $filters.computeFormErrorMessage(v$.password.$errors)
+              "
               type="password"
               label="Password"
             />
@@ -43,7 +63,14 @@
               square
               filled
               clearable
-              v-model="passwordConfirmation"
+              v-model="state.passwordConfirmation"
+              @blur="v$.passwordConfirmation.$touch"
+              :error="v$.passwordConfirmation.$error"
+              :error-message="
+                $filters.computeFormErrorMessage(
+                  v$.passwordConfirmation.$errors
+                )
+              "
               type="passwordConfirmation"
               label="Password Confirmation"
             />
@@ -67,17 +94,57 @@
 </template>
 
 <script lang="ts">
-import { ref } from '@vue/reactivity';
+import { reactive } from '@vue/reactivity';
+import { email, helpers, required } from '@vuelidate/validators';
+import useVuelidate from '@vuelidate/core';
 export default {
   name: 'RegisterPage',
 };
 </script>
 
 <script setup lang="ts">
-const firstName = ref('');
-const lastName = ref('');
-const email = ref('');
-const password = ref('');
-const passwordConfirmation = ref('');
+const state = reactive({
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  passwordConfirmation: '',
+});
+
+const passwordRule = helpers.regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/);
+
+const passwordConfirmationRule = (value: string) => state.password == value;
+
+const rules = {
+  email: {
+    required: helpers.withMessage('Email cannot be blank', required),
+    email: helpers.withMessage('Incorrect email format', email),
+  },
+  firstName: {
+    required: helpers.withMessage('First Name cannot be blank', required),
+  },
+  lastName: {
+    required: helpers.withMessage('Last Name cannot be blank', required),
+  },
+  password: {
+    required: helpers.withMessage('Password cannot be blank', required),
+    passwordRule: helpers.withMessage(
+      'Password must contain minimum eight characters, at least one letter and one number',
+      passwordRule
+    ),
+  },
+  passwordConfirmation: {
+    required: helpers.withMessage(
+      'Password Confirmation cannot be blank',
+      required
+    ),
+    passwordConfirmationRule: helpers.withMessage(
+      'Does not match with password',
+      passwordConfirmationRule
+    ),
+  },
+};
+
+const v$ = useVuelidate(rules, state);
 </script>
 <style scoped></style>

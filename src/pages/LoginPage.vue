@@ -10,8 +10,14 @@
             <q-input
               square
               filled
+              @blur="v$.email.$touch"
+              :error="v$.email.$error"
+              :error-message="
+                $filters.computeFormErrorMessage(v$.email.$errors)
+              "
+              class="error"
               clearable
-              v-model="email"
+              v-model="state.email"
               type="email"
               label="Email"
             />
@@ -19,7 +25,12 @@
               square
               filled
               clearable
-              v-model="password"
+              v-model="state.password"
+              @blur="v$.password.$touch"
+              :error="v$.password.$error"
+              :error-message="
+                $filters.computeFormErrorMessage(v$.password.$errors)
+              "
               type="password"
               label="Password"
             />
@@ -37,7 +48,7 @@
         <q-card-section class="text-center q-pa-none">
           <p class="text-grey-6">
             Not registered?
-            <router-link to="/register"> Create an Account</router-link>
+            <router-link to="/register">Create an Account</router-link>
           </p>
         </q-card-section>
       </q-card>
@@ -46,14 +57,27 @@
 </template>
 
 <script lang="ts">
-import { ref } from '@vue/reactivity';
+import { reactive } from '@vue/reactivity';
+import { required, helpers } from '@vuelidate/validators';
+import useVuelidate from '@vuelidate/core';
 export default {
   name: 'LoginPage',
 };
 </script>
 
 <script setup lang="ts">
-const email = ref('');
-const password = ref('');
+const state = reactive({
+  email: '',
+  password: '',
+});
+
+const rules = {
+  email: { required: helpers.withMessage('Email cannot be blank', required) },
+  password: {
+    required: helpers.withMessage('Password cannot be blank', required),
+  },
+};
+
+const v$ = useVuelidate(rules, state);
 </script>
 <style scoped></style>
