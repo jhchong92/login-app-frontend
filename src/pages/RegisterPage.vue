@@ -10,7 +10,6 @@
             <q-input
               square
               filled
-              clearable
               v-model="state.firstName"
               @blur="v$.firstName.$touch"
               :error="v$.firstName.$error"
@@ -23,7 +22,6 @@
             <q-input
               square
               filled
-              clearable
               v-model="state.lastName"
               @blur="v$.lastName.$touch"
               :error="v$.lastName.$error"
@@ -36,7 +34,6 @@
             <q-input
               square
               filled
-              clearable
               v-model="state.email"
               @blur="v$.email.$touch"
               :error="v$.email.$error"
@@ -49,7 +46,6 @@
             <q-input
               square
               filled
-              clearable
               v-model="state.password"
               @blur="v$.password.$touch"
               :error="v$.password.$error"
@@ -62,7 +58,6 @@
             <q-input
               square
               filled
-              clearable
               v-model="state.passwordConfirmation"
               @blur="v$.passwordConfirmation.$touch"
               :error="v$.passwordConfirmation.$error"
@@ -83,6 +78,7 @@
             size="lg"
             class="full-width"
             label="Register"
+            @click='register'
           />
         </q-card-actions>
         <q-card-section class="text-center q-pa-none">
@@ -94,15 +90,24 @@
 </template>
 
 <script lang="ts">
-import { reactive } from '@vue/reactivity';
-import { email, helpers, required } from '@vuelidate/validators';
-import useVuelidate from '@vuelidate/core';
 export default {
   name: 'RegisterPage',
 };
 </script>
 
 <script setup lang="ts">
+import { reactive } from '@vue/reactivity';
+import { email, helpers, required } from '@vuelidate/validators';
+import useVuelidate from '@vuelidate/core';
+import { api } from 'boot/axios';
+
+function register() {
+  api.post('/registration', state)
+  .then((res) => {
+    console.log('registration response', res);
+  })
+}
+
 const state = reactive({
   firstName: '',
   lastName: '',
