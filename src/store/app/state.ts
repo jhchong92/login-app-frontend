@@ -1,13 +1,11 @@
 import { Profile } from 'src/interfaces';
 
 export interface AppStateInterface {
-  profile: Profile;
+  profile: Profile | null;
 }
 
 function state(): AppStateInterface {
-  return {
-    profile: {} as Profile,
-  };
+  return { } as AppStateInterface;
 }
 
 export default state;
