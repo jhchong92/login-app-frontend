@@ -77,8 +77,8 @@ import { useQuasar } from 'quasar';
 import { useProfileStore } from 'src/stores/profile';
 
 const state = reactive({
-  email: 'jhchong92@gmail.com',
-  password: 'Abc123',
+  email: '',
+  password: '',
 });
 
 const store = useProfileStore();
