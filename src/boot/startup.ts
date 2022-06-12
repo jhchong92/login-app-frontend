@@ -12,16 +12,19 @@ export default boot(async ({ store, router }) => {
 
   router.beforeEach((to, from, next) => {
     console.log('route to ', to);
+    console.log('store', store);
     // route all unauthenticated routes to /home if profile is found
-    const profile: Profile = store.state.appModule.profile;
-    if (!to.meta.authenticated && profile) {
-      console.log('route to /home since profile is set');
-      router.replace('/home');
-    }
+    if (store && store.state && store.state.appModule) {
+      const profile: Profile = store.state.appModule.profile;
+      if (!to.meta.authenticated && profile) {
+        console.log('route to /home since profile is set');
+        router.replace('/home');
+      }
 
-    // route un-authenticated users to /login
-    if (to.meta.authenticated && !profile) {
-      router.replace('/login');
+      // route un-authenticated users to /login
+      if (to.meta.authenticated && !profile) {
+        router.replace('/login');
+      }
     }
     next();
   })
