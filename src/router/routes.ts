@@ -13,6 +13,13 @@ const routes: RouteRecordRaw[] = [
       { path: 'register', component: () => import('pages/RegisterPage.vue') },
     ],
   },
+  {
+    path: '/home',
+    component: () => import('src/layouts/MainLayout.vue'),
+    meta: {
+      authenticated: true
+    }
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
