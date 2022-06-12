@@ -33,6 +33,7 @@
               "
               type="password"
               label="Password"
+              @keydown.enter='login'
             />
           </q-form>
         </q-card-section>
