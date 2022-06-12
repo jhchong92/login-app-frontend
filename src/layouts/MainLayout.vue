@@ -20,16 +20,16 @@ export default {
 </script>
 
 <script setup lang='ts'>
-import { useStore } from 'src/store';
 import { api } from 'boot/axios';
 import { useRouter } from 'vue-router';
 import { computed } from 'vue';
+import { useProfileStore } from 'src/stores/profile';
 
-const $store = useStore();
+const $store = useProfileStore();
 const router = useRouter();
 
-const firstName = computed(() => $store.state.appModule.profile?.firstName);
-const lastName = computed(() => $store.state.appModule.profile?.lastName);
+const firstName = computed(() => $store.profile?.firstName);
+const lastName = computed(() => $store.profile?.lastName);
 
 function logout() {
   api.post('/logout', {})
@@ -37,7 +37,7 @@ function logout() {
     console.error('error logging out', err);
   })
   .finally(() => {
-    $store.commit('appModule/unsetProfile');
+    $store.unsetProfile()
     router.push('/login')
   })
 }

@@ -73,15 +73,15 @@ import useVuelidate from '@vuelidate/core';
 import { Profile, ResponseBody } from 'src/interfaces';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useRouter } from 'vue-router';
-import { useStore } from 'src/store';
 import { useQuasar } from 'quasar';
+import { useProfileStore } from 'src/stores/profile';
 
 const state = reactive({
   email: 'jhchong92@gmail.com',
   password: 'Abc123',
 });
 
-const store = useStore();
+const store = useProfileStore();
 const router = useRouter();
 const $q = useQuasar()
 
@@ -103,7 +103,7 @@ function login() {
     // get profile after logging in and re-route to /home
     api.get('/profile')
     .then((res: AxiosResponse<Profile>) => {
-      store.commit('appModule/setProfile', res.data);
+      store.setProfile(res.data);
       router.replace('/home')
     })
     .catch(handleAxiosError)
