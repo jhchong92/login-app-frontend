@@ -66,8 +66,9 @@
                   v$.passwordConfirmation.$errors
                 )
               "
-              type="passwordConfirmation"
+              type="password"
               label="Password Confirmation"
+              @keydown.enter='register'
             />
           </q-form>
         </q-card-section>
@@ -100,11 +101,30 @@ import { reactive } from '@vue/reactivity';
 import { email, helpers, required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import { api } from 'boot/axios';
+import { AxiosError } from 'axios';
+import { ResponseBody } from 'src/interfaces';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
+
+const $q = useQuasar();
+const router = useRouter();
 
 function register() {
   api.post('/registration', state)
   .then((res) => {
     console.log('registration response', res);
+    $q.notify({
+      message: `Successfully registered ${state.email}. You may login now.`,
+      color: 'green'
+    })
+    router.push('/login');
+  }).catch((err: AxiosError<ResponseBody>) => {
+    if (err.response) {
+      $q.notify({
+        message: err.response.data.message,
+        color: 'red'
+      })
+    }
   })
 }
 
