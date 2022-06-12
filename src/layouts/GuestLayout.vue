@@ -11,15 +11,12 @@
 </template>
 
 <script lang="ts">
-import { ref } from '@vue/reactivity';
 export default {
   name: 'GuestLayout',
 };
 </script>
 
 <script setup lang="ts">
-const email = ref('');
-const password = ref('');
 </script>
 
 <style scoped></style>
