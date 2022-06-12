@@ -6,7 +6,7 @@
   },
   "proxies": {
     "/api": {
-      "origin": "https://jh-login-app-backend.herokuapp.com/api"
+      "origin": "https://${API_APP_NAME}.herokuapp.com/api"
     }
   }
 }
