@@ -32,7 +32,8 @@ module.exports = configure(function (/* ctx */) {
     boot: [
 
       'axios',
-      'filters'
+      'filters',
+      'startup'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
