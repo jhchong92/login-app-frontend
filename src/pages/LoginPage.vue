@@ -43,6 +43,7 @@
             size="lg"
             class="full-width"
             label="Login"
+            @click="login"
           />
         </q-card-actions>
         <q-card-section class="text-center q-pa-none">
@@ -58,18 +59,55 @@
 
 <script lang="ts">
 import { reactive } from '@vue/reactivity';
-import { required, helpers } from '@vuelidate/validators';
-import useVuelidate from '@vuelidate/core';
 export default {
   name: 'LoginPage',
 };
 </script>
 
 <script setup lang="ts">
+import { api } from 'boot/axios';
+import { reactive } from '@vue/reactivity';
+import { helpers, required } from '@vuelidate/validators';
+import useVuelidate from '@vuelidate/core';
+import { Profile, ResponseBody } from 'src/interfaces';
+import { AxiosError, AxiosResponse } from 'axios';
+import { useRouter } from 'vue-router';
+import { useStore } from 'src/store';
+import { useQuasar } from 'quasar';
+
 const state = reactive({
-  email: '',
-  password: '',
+  email: 'jhchong92@gmail.com',
+  password: 'Abc123',
 });
+
+const store = useStore();
+const router = useRouter();
+const $q = useQuasar()
+
+function handleAxiosError(err: AxiosError<ResponseBody>) {
+  if (err.response) {
+    $q.notify({
+      message: err.response.data.message,
+      color: 'red'
+    })
+  } else {
+    console.error('Unhandled error', err);
+  }
+}
+function login() {
+  api.post('/login', {
+    username: state.email,
+    password: state.password
+  }).then((res: AxiosResponse) => {
+    // get profile after logging in and re-route to /home
+    api.get('/profile')
+    .then((res: AxiosResponse<Profile>) => {
+      store.commit('appModule/setProfile', res.data);
+      router.replace('/home')
+    })
+    .catch(handleAxiosError)
+  }).catch(handleAxiosError)
+}
 
 const rules = {
   email: { required: helpers.withMessage('Email cannot be blank', required) },
